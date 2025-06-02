@@ -1,4 +1,4 @@
-// ✅ BioBoom Backend v4.1 with Sector Logic, Budget Cap, Leaderboard, Corrected CORS
+// ✅ BioBoom Backend v4.2 – Sector Logic, Budget Cap, Leaderboard, Scenario Reset
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -36,10 +36,10 @@ let gameState = {
 const GM_PIN = process.env.GM_PIN || '2ai34Nid####';
 
 app.get('/', (req, res) => {
-  res.send('✅ BioBoom backend with budget, ESG, and leaderboard is live');
+  res.send('✅ BioBoom backend with logic, leaderboard, reset is live');
 });
 
-// ✅ Auth route for GM and player
+// ✅ Auth route
 app.post('/auth', (req, res) => {
   const { role, pin } = req.body;
   if (role === 'gm' && pin === GM_PIN) return res.json({ success: true });
@@ -49,7 +49,7 @@ app.post('/auth', (req, res) => {
   return res.json({ success: false });
 });
 
-// ✅ Generate player PIN (valid for 24h)
+// ✅ Generate player PIN
 app.post('/generate-pin', (req, res) => {
   const pin = 'P' + Math.floor(100000 + Math.random() * 900000);
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -58,7 +58,7 @@ app.post('/generate-pin', (req, res) => {
   res.json({ pin, expires: gameState.pinExpiry });
 });
 
-// ✅ Set new scenario
+// ✅ Set scenario
 app.post('/scenario', (req, res) => {
   const { scenario, policyNote } = req.body;
   gameState.scenario = scenario;
@@ -69,31 +69,28 @@ app.post('/scenario', (req, res) => {
   res.json({ success: true });
 });
 
-// ✅ Get scenario info
+// ✅ Get current scenario and tips
 app.get('/scenario', (req, res) => {
   res.json({ scenario: gameState.scenario, policyNote: gameState.policyNote });
 });
 
-// ✅ Submit player move
+// ✅ Submit move
 app.post('/submit', (req, res) => {
   const { playerId, data } = req.body;
   const config = sectorConfig[data.sector] || sectorConfig["Others"];
   const unitCost = config.unitCost;
   const totalCost = unitCost * data.units;
 
-  // Budget check
   if (!gameState.playerBudget[playerId]) gameState.playerBudget[playerId] = 30000;
   if (gameState.playerBudget[playerId] < totalCost) {
     return res.status(400).json({ success: false, message: '💸 Budget exceeded.' });
   }
   gameState.playerBudget[playerId] -= totalCost;
 
-  // ESG calculation
   const baseESG = 50 + (Math.abs(data.trl - data.mrl) === 0 ? 10 : Math.abs(data.trl - data.mrl) === 1 ? -5 : -15);
   const esgDelta = config.esgBonus || -config.esgPenalty || 0;
   const esg = Math.max(0, Math.min(100, baseESG + esgDelta));
 
-  // Feedback generation
   const feedback = data.sector === "Bioenergy" && data.units > 40
     ? "⚠️ Potential land-use pressure."
     : data.sector === "Agrobiotech" && data.trl <= 1
@@ -119,19 +116,28 @@ app.post('/submit', (req, res) => {
   res.json({ success: true, esg: record.esg, feedback: record.feedback });
 });
 
-// ✅ Get all submissions (for GM)
+// ✅ Get all submissions
 app.get('/submissions', (req, res) => {
   res.json(gameState.submissions);
 });
 
-// ✅ Leaderboard
+// ✅ Leaderboard route
 app.get('/leaderboard', (req, res) => {
   const scores = gameState.playerScores || {};
   const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
   res.json(sorted.map(([name, score]) => ({ name, score })));
 });
 
+// ✅ Reset everything
+app.post('/reset', (req, res) => {
+  gameState.submissions = {};
+  gameState.submissionCount = {};
+  gameState.playerBudget = {};
+  gameState.playerScores = {};
+  res.json({ success: true });
+});
+
 // ✅ Start server
 app.listen(port, () => {
-  console.log('✅ BioBoom backend is running on port', port);
+  console.log('✅ BioBoom backend running on port', port);
 });
