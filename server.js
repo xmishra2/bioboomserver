@@ -1,4 +1,4 @@
-// ✅ BioBoom Backend v4.2 – Sector Logic, Budget Cap, Leaderboard, Scenario Reset
+// ✅ BioBoom Backend v4.3 – Sector Logic, Budget Cap, Leaderboard, Random Events
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -21,10 +21,30 @@ const sectorConfig = {
   Others: { unitCost: 100, esgPenalty: 0, externalityPerUnit: 0 }
 };
 
+// ✅ Random events
+const randomEvents = [
+  {
+    name: "Tech Disruption",
+    description: "Unexpected tech failure affects high-TRL projects.",
+    impact: (data, esg) => data.trl >= 3 ? esg - 10 : esg
+  },
+  {
+    name: "Green Funding",
+    description: "Extra ESG points for ESG leaders.",
+    impact: (data, esg) => esg > 60 ? esg + 5 : esg
+  },
+  {
+    name: "Policy U-Turn",
+    description: "Global strategies are penalized due to trade uncertainty.",
+    impact: (data, esg) => data.target === "Global" ? esg - 5 : esg
+  }
+];
+
 // ✅ Initial game state
 let gameState = {
   scenario: null,
   policyNote: "",
+  randomEvent: null,
   submissions: {},
   submissionCount: {},
   playerPIN: null,
@@ -36,7 +56,7 @@ let gameState = {
 const GM_PIN = process.env.GM_PIN || '2ai34Nid####';
 
 app.get('/', (req, res) => {
-  res.send('✅ BioBoom backend with logic, leaderboard, reset is live');
+  res.send('✅ BioBoom backend with logic, leaderboard, reset, and random events is live');
 });
 
 // ✅ Auth route
@@ -63,15 +83,16 @@ app.post('/scenario', (req, res) => {
   const { scenario, policyNote } = req.body;
   gameState.scenario = scenario;
   gameState.policyNote = policyNote || "";
+  gameState.randomEvent = randomEvents[Math.floor(Math.random() * randomEvents.length)];
   gameState.submissions = {};
   gameState.submissionCount = {};
   gameState.playerBudget = {};
-  res.json({ success: true });
+  res.json({ success: true, event: gameState.randomEvent });
 });
 
 // ✅ Get current scenario and tips
 app.get('/scenario', (req, res) => {
-  res.json({ scenario: gameState.scenario, policyNote: gameState.policyNote });
+  res.json({ scenario: gameState.scenario, policyNote: gameState.policyNote, randomEvent: gameState.randomEvent });
 });
 
 // ✅ Submit move
@@ -87,9 +108,14 @@ app.post('/submit', (req, res) => {
   }
   gameState.playerBudget[playerId] -= totalCost;
 
-  const baseESG = 50 + (Math.abs(data.trl - data.mrl) === 0 ? 10 : Math.abs(data.trl - data.mrl) === 1 ? -5 : -15);
+  let baseESG = 50 + (Math.abs(data.trl - data.mrl) === 0 ? 10 : Math.abs(data.trl - data.mrl) === 1 ? -5 : -15);
   const esgDelta = config.esgBonus || -config.esgPenalty || 0;
-  const esg = Math.max(0, Math.min(100, baseESG + esgDelta));
+  baseESG += esgDelta;
+
+  if (gameState.randomEvent && typeof gameState.randomEvent.impact === 'function') {
+    baseESG = gameState.randomEvent.impact(data, baseESG);
+  }
+  const esg = Math.max(0, Math.min(100, baseESG));
 
   const feedback = data.sector === "Bioenergy" && data.units > 40
     ? "⚠️ Potential land-use pressure."
@@ -134,6 +160,7 @@ app.post('/reset', (req, res) => {
   gameState.submissionCount = {};
   gameState.playerBudget = {};
   gameState.playerScores = {};
+  gameState.randomEvent = null;
   res.json({ success: true });
 });
 
