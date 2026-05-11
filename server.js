@@ -796,10 +796,9 @@ if (
 
   }
 
-  // FINAL FEEDBACK
+ // FINAL FEEDBACK
 
-  const finalFeedback = `
-
+const finalFeedback = `
 Interpretation:
 ${interpretation}
 
@@ -820,7 +819,6 @@ ${strategicProfile}
 
 Risk Level:
 ${riskLevel}
-
 `;
 
   // SAVE RECORD
