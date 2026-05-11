@@ -654,6 +654,21 @@ app.post('/submit', (req, res) => {
   let interpretation = "";
   let strategicProfile = "";
   let riskLevel = "Moderate";
+  if (
+  coherenceScore < 40
+) {
+
+  riskLevel = "High";
+
+}
+
+if (
+  coherenceScore > 80
+) {
+
+  riskLevel = "Low";
+
+}
 
   // INTERPRETATION
 
