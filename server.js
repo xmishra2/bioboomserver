@@ -326,6 +326,70 @@ app.get('/scenario', (req, res) => {
 app.post('/submit', (req, res) => {
 
   const { playerId, data } = req.body;
+    // -----------------------------------
+  // PLAYER SCORES
+  // -----------------------------------
+
+  if (!gameState.playerScores[playerId]) {
+
+    gameState.playerScores[playerId] = {
+
+      totalCoherence: 0,
+
+      totalESG: 0,
+
+      totalInnovation: 0,
+
+      totalResilience: 0,
+
+      submissions: 0
+
+    };
+
+  }
+
+  gameState.playerScores[playerId].totalCoherence += coherenceScore;
+
+  gameState.playerScores[playerId].totalESG += esg;
+
+  gameState.playerScores[playerId].totalInnovation += innovation;
+
+  gameState.playerScores[playerId].totalResilience += resilience;
+
+  gameState.playerScores[playerId].submissions += 1;
+
+  // -----------------------------------
+  // RESPONSE
+  // -----------------------------------
+
+  res.json({
+
+    success: true,
+
+    scenarioID,
+
+    coherenceScore,
+
+    esg,
+
+    innovation,
+
+    resilience,
+
+    interpretation,
+
+    strategicProfile,
+
+    riskLevel,
+
+    feedback: finalFeedback,
+
+    remainingBudget:
+      gameState.playerBudget[playerId]
+
+  });
+
+});
 
   // -----------------------------------
   // VALIDATION
