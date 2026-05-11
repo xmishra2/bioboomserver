@@ -744,30 +744,38 @@ riskLevel = "Low";
 
 }
 
-// FINAL FEEDBACK
+  // FINAL FEEDBACK
 
-const finalFeedback = `
-Interpretation:
-${interpretation}
+  const finalFeedback =
+    "Interpretation:\n" +
+    interpretation +
 
-Strengths:
-${strengths.join(' ') || "No major strengths detected."}
+    "\n\nStrengths:\n" +
+    (
+      strengths.join(' ') ||
+      "No major strengths detected."
+    ) +
 
-Weaknesses:
-${weaknesses.join(' ') || "No major weaknesses detected."}
+    "\n\nWeaknesses:\n" +
+    (
+      weaknesses.join(' ') ||
+      "No major weaknesses detected."
+    ) +
 
-Improvement Suggestions:
-${tips.join(' ') || "Current strategy appears relatively stable."}
+    "\n\nImprovement Suggestions:\n" +
+    (
+      tips.join(' ') ||
+      "Current strategy appears relatively stable."
+    ) +
 
-Systems Insight:
-${systemsInsight}
+    "\n\nSystems Insight:\n" +
+    systemsInsight +
 
-Strategic Profile:
-${strategicProfile}
+    "\n\nStrategic Profile:\n" +
+    strategicProfile +
 
-Risk Level:
-${riskLevel}
-`;
+    "\n\nRisk Level:\n" +
+    riskLevel;
 
 // -----------------------------------
 // SAVE RECORD
