@@ -1,4 +1,4 @@
-```javascript id="g8n2vp"
+
 // ✅ BioBoom Backend v5.0 – Systemic Coherence Engine
 
 const express = require('express');
