@@ -1,9 +1,8 @@
-// ✅ BioBoom Backend v5.1 – Clean Stable Version
-
 const express = require('express');
 const cors = require('cors');
 
 const app = express();
+
 const port = process.env.PORT || 3000;
 
 // --------------------------------------------------
@@ -11,12 +10,19 @@ const port = process.env.PORT || 3000;
 // --------------------------------------------------
 
 app.use(cors({
-origin: [
-'https://bioboom.netlify.app',
-'http://localhost:5500'
-],
-methods: ['GET', 'POST'],
-allowedHeaders: ['Content-Type']
+
+  origin: [
+
+    'https://bioboom.netlify.app',
+
+    'http://localhost:5500'
+
+  ],
+
+  methods: ['GET', 'POST'],
+
+  allowedHeaders: ['Content-Type']
+
 }));
 
 app.use(express.json());
@@ -27,11 +33,15 @@ app.use(express.json());
 
 const scaleCost = {
 
-"Pilot": 2000,
-"Small Scale": 5000,
-"Medium Scale": 10000,
-"Large Scale": 20000,
-"Industrial Scale": 30000
+  "Pilot": 2000,
+
+  "Small Scale": 5000,
+
+  "Medium Scale": 10000,
+
+  "Large Scale": 20000,
+
+  "Industrial Scale": 30000
 
 };
 
@@ -41,64 +51,91 @@ const scaleCost = {
 
 const sectorCodes = {
 
-"Precision Biopharma": 0,
-"Sustainable Materials": 1,
-"Industrial Fermentation": 2,
-"Bioenergy Systems": 3,
-"Circular Packaging": 4,
-"Regenerative Agriculture": 5,
-"Waste Biorefineries": 6,
-"Blue Bioeconomy": 7,
-"BioDigital Platforms & Intelligence Systems": 8,
-"Cellular & Synthetic Bioeconomy": 9
+  "Precision Biopharma": 0,
+
+  "Sustainable Materials": 1,
+
+  "Industrial Fermentation": 2,
+
+  "Bioenergy Systems": 3,
+
+  "Circular Packaging": 4,
+
+  "Regenerative Agriculture": 5,
+
+  "Waste Biorefineries": 6,
+
+  "Blue Bioeconomy": 7,
+
+  "BioDigital Platforms & Intelligence Systems": 8,
+
+  "Cellular & Synthetic Bioeconomy": 9
 
 };
 
 const strategyCodes = {
 
-"Breakthrough Innovation": 0,
-"Incremental Optimization": 1,
-"Circular Innovation": 2,
-"Platform & Ecosystem Expansion": 3,
-"Cost Leadership & Scale": 4,
-"Adaptive Resilience Strategy": 5
+  "Breakthrough Innovation": 0,
+
+  "Incremental Optimization": 1,
+
+  "Circular Innovation": 2,
+
+  "Platform & Ecosystem Expansion": 3,
+
+  "Cost Leadership & Scale": 4,
+
+  "Adaptive Resilience Strategy": 5
 
 };
 
 const targetCodes = {
 
-"European Union": 0,
-"Local Market": 1,
-"Global South": 2
+  "European Union": 0,
+
+  "Local Market": 1,
+
+  "Global South": 2
 
 };
 
 const circularityCodes = {
 
-"Low": 0,
-"Medium": 1,
-"High": 2
+  "Low": 0,
+
+  "Medium": 1,
+
+  "High": 2
 
 };
 
 const unitsBucketCodes = {
 
-"Pilot": 0,
-"Small Scale": 1,
-"Medium Scale": 2,
-"Large Scale": 3,
-"Industrial Scale": 4
+  "Pilot": 0,
+
+  "Small Scale": 1,
+
+  "Medium Scale": 2,
+
+  "Large Scale": 3,
+
+  "Industrial Scale": 4
 
 };
 
 const scenarioCodes = {
 
-"Recession": 0,
-"Boom": 1,
-"Carbon Pricing Transition": 2,
-"Trade Protection Escalation": 3,
-"Credit Liquidity Crunch": 4,
-"Tech Breakthrough": 5
+  "Recession": 0,
+
+  "Boom": 1,
+
+  "Carbon Pricing Transition": 2,
+
+  "Trade Protection Escalation": 3,
+
+  "Credit Liquidity Crunch": 4,
+
+  "Tech Breakthrough": 5
 
 };
 
@@ -108,23 +145,32 @@ const scenarioCodes = {
 
 const randomEvents = [
 
-{
-name: "Tech Disruption",
-description:
-"Unexpected technological instability affects innovation systems."
-},
+  {
 
-{
-name: "Green Funding",
-description:
-"Sustainable and circular ventures receive stronger institutional support."
-},
+    name: "Tech Disruption",
 
-{
-name: "Policy U-Turn",
-description:
-"Trade uncertainty increases regulatory instability."
-}
+    description:
+      "Unexpected technological instability affects innovation systems."
+
+  },
+
+  {
+
+    name: "Green Funding",
+
+    description:
+      "Sustainable and circular ventures receive stronger institutional support."
+
+  },
+
+  {
+
+    name: "Policy U-Turn",
+
+    description:
+      "Trade uncertainty increases regulatory instability."
+
+  }
 
 ];
 
@@ -134,15 +180,23 @@ description:
 
 let gameState = {
 
-scenario: null,
-policyNote: "",
-randomEvent: null,
-submissions: {},
-submissionCount: {},
-playerPIN: null,
-pinExpiry: null,
-playerBudget: {},
-playerScores: {}
+  scenario: null,
+
+  policyNote: "",
+
+  randomEvent: null,
+
+  submissions: {},
+
+  submissionCount: {},
+
+  playerPIN: null,
+
+  pinExpiry: null,
+
+  playerBudget: {},
+
+  playerScores: {}
 
 };
 
@@ -151,17 +205,17 @@ playerScores: {}
 // --------------------------------------------------
 
 const GM_PIN =
-process.env.GM_PIN || '2ai34Nid####';
+  process.env.GM_PIN || '2ai34Nid####';
 
 // --------------------------------------------------
-// ROOT
+// HEALTH CHECK
 // --------------------------------------------------
 
 app.get('/', (req, res) => {
 
-res.send(
-'✅ BioBoom v5.1 backend is live'
-);
+  res.send(
+    'BioBoom backend is live'
+  );
 
 });
 
@@ -171,65 +225,85 @@ res.send(
 
 app.post('/auth', (req, res) => {
 
-const { role, pin } = req.body;
+  const { role, pin } = req.body;
 
-if (
-role === 'gm' &&
-pin === GM_PIN
-) {
+  if (
 
-```
-return res.json({
-  success: true
-});
-```
+    role === 'gm' &&
 
-}
+    pin === GM_PIN
 
-if (
-role === 'player' &&
-pin === gameState.playerPIN &&
-new Date() < new Date(gameState.pinExpiry)
-) {
+  ) {
 
-```
-return res.json({
-  success: true
-});
-```
+    return res.json({
 
-}
+      success: true
 
-return res.json({
-success: false
-});
+    });
+
+  }
+
+  if (
+
+    role === 'player' &&
+
+    pin === gameState.playerPIN &&
+
+    new Date() < new Date(gameState.pinExpiry)
+
+  ) {
+
+    return res.json({
+
+      success: true
+
+    });
+
+  }
+
+  return res.json({
+
+    success: false
+
+  });
 
 });
 
 // --------------------------------------------------
-// GENERATE PIN
+// GENERATE PLAYER PIN
 // --------------------------------------------------
 
 app.post('/generate-pin', (req, res) => {
 
-const pin =
-'P' +
-Math.floor(100000 + Math.random() * 900000);
+  const pin =
 
-const expires =
-new Date(
-Date.now() + 24 * 60 * 60 * 1000
-);
+    'P' +
 
-gameState.playerPIN = pin;
+    Math.floor(
 
-gameState.pinExpiry =
-expires.toISOString();
+      100000 + Math.random() * 900000
 
-res.json({
-pin,
-expires: gameState.pinExpiry
-});
+    );
+
+  const expires =
+
+    new Date(
+
+      Date.now() + 24 * 60 * 60 * 1000
+
+    );
+
+  gameState.playerPIN = pin;
+
+  gameState.pinExpiry = expires.toISOString();
+
+  res.json({
+
+    pin,
+
+    expires: gameState.pinExpiry
+
+  });
 
 });
 
@@ -239,33 +313,36 @@ expires: gameState.pinExpiry
 
 app.post('/scenario', (req, res) => {
 
-const { scenario, policyNote } = req.body;
+  const { scenario, policyNote } = req.body;
 
-gameState.scenario = scenario;
+  gameState.scenario = scenario;
 
-gameState.policyNote =
-policyNote || "";
+  gameState.policyNote =
+    policyNote || "";
 
-gameState.randomEvent =
-randomEvents[
-Math.floor(
-Math.random() * randomEvents.length
-)
-];
+  gameState.randomEvent =
 
-gameState.submissions = {};
-gameState.submissionCount = {};
-gameState.playerBudget = {};
-gameState.playerScores = {};
+    randomEvents[
+      Math.floor(
+        Math.random() * randomEvents.length
+      )
+    ];
 
-res.json({
+  gameState.submissions = {};
 
-```
-success: true,
-event: gameState.randomEvent
-```
+  gameState.submissionCount = {};
 
-});
+  gameState.playerBudget = {};
+
+  gameState.playerScores = {};
+
+  res.json({
+
+    success: true,
+
+    event: gameState.randomEvent
+
+  });
 
 });
 
@@ -275,15 +352,15 @@ event: gameState.randomEvent
 
 app.get('/scenario', (req, res) => {
 
-res.json({
+  res.json({
 
-```
-scenario: gameState.scenario,
-policyNote: gameState.policyNote,
-randomEvent: gameState.randomEvent
-```
+    scenario: gameState.scenario,
 
-});
+    policyNote: gameState.policyNote,
+
+    randomEvent: gameState.randomEvent
+
+  });
 
 });
 
@@ -293,458 +370,375 @@ randomEvent: gameState.randomEvent
 
 app.post('/submit', (req, res) => {
 
-const { playerId, data } = req.body;
+  const { playerId, data } = req.body;
 
-if (!playerId || !data) {
+  if (!playerId || !data) {
 
-```
-return res.status(400).json({
+    return res.status(400).json({
 
-  success: false,
-  message: 'Missing submission data.'
+      success: false,
 
-});
-```
+      message: 'Missing submission data.'
 
-}
+    });
 
-// -----------------------------------
-// BUDGET
-// -----------------------------------
+  }
 
-const totalCost =
-scaleCost[data.unitsBucket];
+  const totalCost =
+    scaleCost[data.unitsBucket];
 
-if (!gameState.playerBudget[playerId]) {
+  if (!gameState.playerBudget[playerId]) {
 
-```
-gameState.playerBudget[playerId] = 30000;
-```
+    gameState.playerBudget[playerId] = 30000;
 
-}
+  }
 
-if (
-gameState.playerBudget[playerId] < totalCost
-) {
+  if (
+    gameState.playerBudget[playerId] < totalCost
+  ) {
 
-```
-return res.status(400).json({
+    return res.status(400).json({
 
-  success: false,
-  message: '💸 Budget exceeded.'
+      success: false,
 
-});
-```
+      message: 'Budget exceeded.'
 
-}
+    });
 
-gameState.playerBudget[playerId] -= totalCost;
+  }
 
-// -----------------------------------
-// SUBMISSION LIMIT
-// -----------------------------------
+  gameState.playerBudget[playerId] -= totalCost;
 
-if (!gameState.submissionCount[playerId]) {
+  if (!gameState.submissionCount[playerId]) {
 
-```
-gameState.submissionCount[playerId] = 0;
-```
+    gameState.submissionCount[playerId] = 0;
 
-}
+  }
 
-if (
-gameState.submissionCount[playerId] >= 5
-) {
+  if (
+    gameState.submissionCount[playerId] >= 5
+  ) {
 
-```
-return res.status(400).json({
+    return res.status(400).json({
 
-  success: false,
-  message:
-    'Maximum 5 submissions reached.'
+      success: false,
 
-});
-```
+      message:
+        'Maximum 5 submissions reached.'
 
-}
+    });
 
-// -----------------------------------
-// SCENARIO ID
-// -----------------------------------
+  }
 
-const scenarioID =
+  const scenarioID =
 
-```
-  sectorCodes[data.sector]
+      sectorCodes[data.sector]
 
-\+ 10 *
+    + 10 *
 
-  strategyCodes[data.strategy]
+      strategyCodes[data.strategy]
 
-\+ 60 *
+    + 60 *
 
-  data.trl
+      data.trl
 
-\+ 300 *
+    + 300 *
 
-  data.mrl
+      data.mrl
 
-\+ 1500 *
+    + 1500 *
 
-  circularityCodes[data.circularity]
+      circularityCodes[data.circularity]
 
-\+ 4500 *
+    + 4500 *
 
-  targetCodes[data.target]
+      targetCodes[data.target]
 
-\+ 13500 *
+    + 13500 *
 
-  scenarioCodes[gameState.scenario]
+      scenarioCodes[gameState.scenario]
 
-\+ 81000 *
+    + 81000 *
 
-  unitsBucketCodes[data.unitsBucket];
-```
+      unitsBucketCodes[data.unitsBucket];
 
-// -----------------------------------
-// COHERENCE
-// -----------------------------------
+  let cs = 0.8;
+  let cst = 0.8;
+  let ct = 0.8;
+  let cm = 0.8;
+  let cc = 0.8;
+  let cu = 0.8;
 
-const diffTRL =
-Math.abs(data.trl - data.mrl);
+  if (
 
-let coherenceScore =
-Math.max(
-20,
-100 - diffTRL * 20
-);
+    gameState.scenario === "Recession" &&
 
-if (
-data.circularity === "High"
-) {
+    data.strategy ===
+      "Adaptive Resilience Strategy"
 
-```
-coherenceScore += 10;
-```
+  ) {
 
-}
+    cst = 1.0;
 
-if (
-data.strategy ===
-"Adaptive Resilience Strategy"
-&&
-gameState.scenario ===
-"Recession"
-) {
+  }
 
-```
-coherenceScore += 10;
-```
+  if (
 
-}
+    gameState.scenario === "Boom" &&
 
-coherenceScore =
-Math.min(100, coherenceScore);
+    data.strategy ===
+      "Cost Leadership & Scale"
 
-// -----------------------------------
-// ESG
-// -----------------------------------
+  ) {
 
-let esg = 50;
+    cst = 1.0;
 
-if (
-data.circularity === "High"
-) {
+  }
 
-```
-esg += 30;
-```
+  const diffTRL =
+    Math.abs(data.trl - data.mrl);
 
-}
+  ct =
+    Math.max(0.3, 1 - diffTRL * 0.2);
 
-if (
-data.circularity === "Medium"
-) {
+  cm =
+    Math.max(0, 1 - diffTRL * 0.25);
 
-```
-esg += 15;
-```
+  const coherenceScore = Number(
 
-}
+    (
 
-esg =
-Math.min(100, esg);
+      cs *
 
-// -----------------------------------
-// INNOVATION
-// -----------------------------------
+      cst *
 
-let innovation =
-40 + data.trl * 10;
+      ct *
 
-if (
-data.strategy ===
-"Breakthrough Innovation"
-) {
+      cm *
 
-```
-innovation += 20;
-```
+      cc *
 
-}
+      cu *
 
-innovation =
-Math.min(100, innovation);
+      100
 
-// -----------------------------------
-// RESILIENCE
-// -----------------------------------
+    ).toFixed(2)
 
-let resilience = 50;
+  );
 
-if (
-data.strategy ===
-"Adaptive Resilience Strategy"
-) {
+  let esg = 50;
 
-```
-resilience += 25;
-```
+  if (data.circularity === "High") {
+    esg += 30;
+  }
 
-}
+  if (data.circularity === "Medium") {
+    esg += 15;
+  }
 
-if (
-data.circularity === "High"
-) {
+  esg = Math.min(100, esg);
 
-```
-resilience += 15;
-```
+  let innovation =
+    40 + data.trl * 10;
 
-}
+  if (
+    data.strategy ===
+      "Breakthrough Innovation"
+  ) {
 
-resilience =
-Math.min(100, resilience);
+    innovation += 20;
 
-// -----------------------------------
-// FEEDBACK ENGINE
-// -----------------------------------
+  }
 
-let strengths = [];
-let weaknesses = [];
-let tips = [];
+  innovation =
+    Math.min(100, innovation);
 
-let systemsInsight = "";
-let interpretation = "";
-let strategicProfile = "";
-let riskLevel = "Moderate";
+  let resilience = 50;
 
-// INTERPRETATION
+  if (
+    data.strategy ===
+      "Adaptive Resilience Strategy"
+  ) {
 
-if (coherenceScore >= 85) {
+    resilience += 25;
 
-```
-interpretation =
-  "Highly Coherent Strategy";
-```
+  }
 
-}
+  resilience =
+    Math.min(100, resilience);
+    // --------------------------------------------------
+  // FEEDBACK ENGINE
+  // --------------------------------------------------
 
-else if (coherenceScore >= 70) {
+  let strengths = [];
+  let weaknesses = [];
+  let tips = [];
 
-```
-interpretation =
-  "Strong Strategic Alignment";
-```
+  let systemsInsight = "";
+  let interpretation = "";
+  let strategicProfile = "";
+  let riskLevel = "Moderate";
 
-}
+  // --------------------------------------------------
+  // INTERPRETATION
+  // --------------------------------------------------
 
-else if (coherenceScore >= 50) {
+  if (coherenceScore >= 85) {
 
-```
-interpretation =
-  "Moderate Strategic Tension";
-```
+    interpretation =
+      "Highly Coherent Strategy";
 
-}
+  }
 
-else {
+  else if (coherenceScore >= 70) {
 
-```
-interpretation =
-  "Structurally Fragile Strategy";
-```
+    interpretation =
+      "Strong Strategic Alignment";
 
-}
+  }
 
-// FEEDBACK
+  else if (coherenceScore >= 50) {
 
-if (diffTRL === 0) {
+    interpretation =
+      "Moderate Strategic Tension";
 
-```
-strengths.push(
-  "Technology and manufacturing systems appear strongly aligned."
-);
-```
+  }
 
-}
+  else {
 
-if (diffTRL >= 2) {
+    interpretation =
+      "Structurally Fragile Strategy";
 
-```
-weaknesses.push(
-  "Large TRL-MRL mismatch may create operational bottlenecks."
-);
+  }
 
-tips.push(
-  "Improve manufacturing readiness alignment."
-);
-```
+  // --------------------------------------------------
+  // FEEDBACK
+  // --------------------------------------------------
 
-}
+  if (diffTRL === 0) {
 
-if (
-data.circularity === "High"
-) {
+    strengths.push(
+      "Technology and manufacturing systems appear strongly aligned."
+    );
 
-```
-strengths.push(
-  "High circularity improves long-term sustainability resilience."
-);
-```
+  }
 
-}
+  if (diffTRL >= 2) {
 
-// SCENARIO INSIGHT
+    weaknesses.push(
+      "Large TRL-MRL mismatch may create operational bottlenecks."
+    );
 
-if (
-gameState.scenario === "Recession"
-) {
+    tips.push(
+      "Improve manufacturing readiness alignment."
+    );
 
-```
-systemsInsight =
-  "Economic contractions reward resilience and operational flexibility.";
-```
+    riskLevel = "High";
 
-}
+  }
 
-if (
-gameState.scenario === "Boom"
-) {
+  if (
+    data.circularity === "High"
+  ) {
 
-```
-systemsInsight =
-  "Expansion periods reward scaling and aggressive innovation.";
-```
+    strengths.push(
+      "High circularity improves sustainability resilience."
+    );
 
-}
+  }
 
-if (
-gameState.scenario ===
-"Carbon Pricing Transition"
-) {
+  if (
+    gameState.scenario === "Recession"
+  ) {
 
-```
-systemsInsight =
-  "Climate transition increasingly converts sustainability into competitiveness.";
-```
+    systemsInsight =
+      "Economic contractions reward resilience and operational flexibility.";
 
-}
+  }
 
-if (
-gameState.scenario ===
-"Trade Protection Escalation"
-) {
+  if (
+    gameState.scenario === "Boom"
+  ) {
 
-```
-systemsInsight =
-  "Geopolitical fragmentation rewards regional resilience.";
-```
+    systemsInsight =
+      "Expansion periods reward scaling and aggressive innovation.";
 
-}
+  }
 
-if (
-gameState.scenario ===
-"Credit Liquidity Crunch"
-) {
+  if (
+    gameState.scenario ===
+      "Carbon Pricing Transition"
+  ) {
 
-```
-systemsInsight =
-  "Innovation systems remain dependent on financial stability.";
-```
+    systemsInsight =
+      "Climate transition increasingly converts sustainability into competitiveness.";
 
-}
+  }
 
-if (
-gameState.scenario ===
-"Tech Breakthrough"
-) {
+  if (
+    gameState.scenario ===
+      "Trade Protection Escalation"
+  ) {
 
-```
-systemsInsight =
-  "Technological disruption creates both opportunity and instability.";
-```
+    systemsInsight =
+      "Trade fragmentation rewards regional resilience.";
 
-}
+  }
 
-// STRATEGIC PROFILE
+  if (
+    gameState.scenario ===
+      "Credit Liquidity Crunch"
+  ) {
 
-if (
-innovation >= esg &&
-innovation >= resilience
-) {
+    systemsInsight =
+      "Innovation systems depend on stable financial infrastructure.";
 
-```
-strategicProfile =
-  "Aggressive Innovator";
-```
+  }
 
-}
+  if (
+    gameState.scenario ===
+      "Tech Breakthrough"
+  ) {
 
-else if (
-esg >= innovation &&
-esg >= resilience
-) {
+    systemsInsight =
+      "Technological disruption creates opportunity and instability simultaneously.";
 
-```
-strategicProfile =
-  "Sustainability Leader";
-```
+  }
 
-}
+  // --------------------------------------------------
+  // STRATEGIC PROFILE
+  // --------------------------------------------------
 
-else {
+  if (
+    innovation >= esg &&
+    innovation >= resilience
+  ) {
 
-```
-strategicProfile =
-  "Resilient Adapter";
-```
+    strategicProfile =
+      "Aggressive Innovator";
 
-}
+  }
 
-// RISK LEVEL
+  else if (
+    esg >= innovation &&
+    esg >= resilience
+  ) {
 
-if (
-coherenceScore < 40
-) {
+    strategicProfile =
+      "Sustainability Leader";
 
-```
-riskLevel = "High";
-```
+  }
 
-}
+  else {
 
-if (
-coherenceScore > 80
-) {
+    strategicProfile =
+      "Resilient Adapter";
 
-```
-riskLevel = "Low";
-```
+  }
 
-}
-
+  // --------------------------------------------------
   // FINAL FEEDBACK
+  // --------------------------------------------------
 
   const finalFeedback =
     "Interpretation:\n" +
@@ -777,109 +771,121 @@ riskLevel = "Low";
     "\n\nRisk Level:\n" +
     riskLevel;
 
-// -----------------------------------
-// SAVE RECORD
-// -----------------------------------
+  // --------------------------------------------------
+  // SAVE RECORD
+  // --------------------------------------------------
 
-const record = {
+  const record = {
 
-```
-...data,
+    ...data,
 
-scenario:
-  gameState.scenario,
+    scenario:
+      gameState.scenario,
 
-scenarioID,
+    scenarioID,
 
-coherenceScore,
+    coherenceScore,
 
-esg,
+    esg,
 
-innovation,
+    innovation,
 
-resilience,
+    resilience,
 
-interpretation,
+    interpretation,
 
-strategicProfile,
+    strategicProfile,
 
-riskLevel,
+    riskLevel,
 
-feedback:
-  finalFeedback
-```
+    feedback:
+      finalFeedback
 
-};
+  };
 
-if (!gameState.submissions[playerId]) {
+  if (!gameState.submissions[playerId]) {
 
-```
-gameState.submissions[playerId] = [];
-```
+    gameState.submissions[playerId] = [];
 
-}
+  }
 
-gameState.submissions[playerId].push(record);
+  gameState.submissions[playerId].push(record);
 
-gameState.submissionCount[playerId] += 1;
+  gameState.submissionCount[playerId] += 1;
 
-// -----------------------------------
-// PLAYER SCORES
-// -----------------------------------
+  // --------------------------------------------------
+  // PLAYER SCORES
+  // --------------------------------------------------
 
-if (!gameState.playerScores[playerId]) {
+  if (!gameState.playerScores[playerId]) {
 
-```
-gameState.playerScores[playerId] = {
+    gameState.playerScores[playerId] = {
 
-  totalCoherence: 0,
-  totalESG: 0,
-  totalInnovation: 0,
-  totalResilience: 0,
-  submissions: 0
+      totalCoherence: 0,
 
-};
-```
+      totalESG: 0,
 
-}
+      totalInnovation: 0,
 
-gameState.playerScores[playerId].totalCoherence += coherenceScore;
-gameState.playerScores[playerId].totalESG += esg;
-gameState.playerScores[playerId].totalInnovation += innovation;
-gameState.playerScores[playerId].totalResilience += resilience;
-gameState.playerScores[playerId].submissions += 1;
+      totalResilience: 0,
 
-// RESPONSE
+      submissions: 0
 
-res.json({
+    };
 
-```
-success: true,
+  }
 
-scenarioID,
+  gameState.playerScores[playerId].totalCoherence += coherenceScore;
 
-coherenceScore,
+  gameState.playerScores[playerId].totalESG += esg;
 
-esg,
+  gameState.playerScores[playerId].totalInnovation += innovation;
 
-innovation,
+  gameState.playerScores[playerId].totalResilience += resilience;
 
-resilience,
+  gameState.playerScores[playerId].submissions += 1;
 
-interpretation,
+  // --------------------------------------------------
+  // RESPONSE
+  // --------------------------------------------------
 
-strategicProfile,
+  res.json({
 
-riskLevel,
+    success: true,
 
-feedback:
-  finalFeedback,
+    scenarioID,
 
-remainingBudget:
-  gameState.playerBudget[playerId]
-```
+    coherenceScore,
+
+    esg,
+
+    innovation,
+
+    resilience,
+
+    interpretation,
+
+    strategicProfile,
+
+    riskLevel,
+
+    feedback:
+      finalFeedback,
+
+    remainingBudget:
+      gameState.playerBudget[playerId]
+
+  });
 
 });
+
+// --------------------------------------------------
+// GET SUBMISSIONS
+// --------------------------------------------------
+
+app.get('/submissions', (req, res) => {
+
+  res.json(gameState.submissions);
 
 });
 
@@ -889,64 +895,65 @@ remainingBudget:
 
 app.get('/leaderboard', (req, res) => {
 
-const leaderboard = [];
+  const leaderboard = [];
 
-for (const player in gameState.playerScores) {
+  for (const player in gameState.playerScores) {
 
-```
-const stats =
-  gameState.playerScores[player];
+    const stats =
+      gameState.playerScores[player];
 
-leaderboard.push({
+    leaderboard.push({
 
-  name: player,
+      name: player,
 
-  coherence:
-    Number(
-      (
-        stats.totalCoherence /
+      coherence:
+        Number(
+          (
+            stats.totalCoherence /
+            stats.submissions
+          ).toFixed(2)
+        ),
+
+      esg:
+        Number(
+          (
+            stats.totalESG /
+            stats.submissions
+          ).toFixed(2)
+        ),
+
+      innovation:
+        Number(
+          (
+            stats.totalInnovation /
+            stats.submissions
+          ).toFixed(2)
+        ),
+
+      resilience:
+        Number(
+          (
+            stats.totalResilience /
+            stats.submissions
+          ).toFixed(2)
+        ),
+
+      submissions:
         stats.submissions
-      ).toFixed(2)
-    ),
 
-  esg:
-    Number(
-      (
-        stats.totalESG /
-        stats.submissions
-      ).toFixed(2)
-    ),
+    });
 
-  innovation:
-    Number(
-      (
-        stats.totalInnovation /
-        stats.submissions
-      ).toFixed(2)
-    ),
+  }
 
-  resilience:
-    Number(
-      (
-        stats.totalResilience /
-        stats.submissions
-      ).toFixed(2)
-    ),
+  leaderboard.sort(
 
-  submissions:
-    stats.submissions
+    (a, b) =>
 
-});
-```
+      b.coherence - a.coherence
 
-}
+  );
 
-leaderboard.sort(
-(a, b) =>
-b.coherence - a.coherence
-);
-
-res.json(leaderboard);
+  res.json(leaderboard);
 
 });
 
@@ -956,19 +963,21 @@ res.json(leaderboard);
 
 app.post('/reset', (req, res) => {
 
-gameState.submissions = {};
-gameState.submissionCount = {};
-gameState.playerBudget = {};
-gameState.playerScores = {};
-gameState.randomEvent = null;
+  gameState.submissions = {};
 
-res.json({
+  gameState.submissionCount = {};
 
-```
-success: true
-```
+  gameState.playerBudget = {};
 
-});
+  gameState.playerScores = {};
+
+  gameState.randomEvent = null;
+
+  res.json({
+
+    success: true
+
+  });
 
 });
 
@@ -978,9 +987,12 @@ success: true
 
 app.listen(port, () => {
 
-console.log(
-'✅ BioBoom v5.1 running on port',
-port
-);
+  console.log(
+
+    'BioBoom backend running on port',
+
+    port
+
+  );
 
 });
