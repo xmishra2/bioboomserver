@@ -740,19 +740,23 @@ app.post('/submit', (req, res) => {
   // FEEDBACK ENGINE
   // -----------------------------------
 
- // -----------------------------------
+// -----------------------------------
 // FEEDBACK ENGINE
 // -----------------------------------
 
-let feedback = [];
+let strengths = [];
 
-let improvementTips = [];
+let weaknesses = [];
+
+let tips = [];
+
+let systemsInsight = "";
+
+let interpretation = "";
 
 let strategicProfile = "";
 
 let riskLevel = "Moderate";
-
-let interpretation = "";
 
 // -----------------------------------
 // COHERENCE INTERPRETATION
@@ -793,53 +797,356 @@ else {
 
 }
 
-// -----------------------------------
-// TRL-MRL FEEDBACK
-// -----------------------------------
+// ==================================================
+// RECESSION
+// ==================================================
 
-if (diffTRL >= 2) {
+if (gameState.scenario === "Recession") {
 
-  feedback.push(
-    "Large TRL-MRL mismatch may create operational bottlenecks."
-  );
+  if (
 
-  improvementTips.push(
-    "Consider improving manufacturing readiness before aggressive scaling."
-  );
+    data.strategy ===
+      "Adaptive Resilience Strategy"
 
+  ) {
+
+    strengths.push(
+      "Adaptive operational structures improve survivability during economic contraction."
+    );
+
+  }
+
+  if (
+
+    data.unitsBucket ===
+      "Industrial Scale"
+
+  ) {
+
+    weaknesses.push(
+      "Large-scale expansion increases systemic exposure during recession conditions."
+    );
+
+    tips.push(
+      "Consider phased or medium-scale deployment strategies."
+    );
+
+    riskLevel = "High";
+
+  }
+
+  if (
+
+    data.strategy ===
+      "Breakthrough Innovation"
+
+  ) {
+
+    weaknesses.push(
+      "High-risk innovation systems may struggle under reduced investment conditions."
+    );
+
+  }
+
+  systemsInsight =
+    "Economic contractions often reward flexibility and resilience more than aggressive expansion.";
 }
+
+// ==================================================
+// BOOM
+// ==================================================
+
+if (gameState.scenario === "Boom") {
+
+  if (
+
+    data.unitsBucket ===
+      "Industrial Scale"
+
+  ) {
+
+    strengths.push(
+      "Industrial-scale deployment may efficiently capture expansionary market demand."
+    );
+
+  }
+
+  if (
+
+    data.strategy ===
+      "Breakthrough Innovation"
+
+  ) {
+
+    strengths.push(
+      "Boom environments often support ambitious innovation investment."
+    );
+
+  }
+
+  if (
+
+    data.unitsBucket ===
+      "Pilot"
+
+  ) {
+
+    weaknesses.push(
+      "Pilot-scale deployment may underutilize favorable expansion conditions."
+    );
+
+    tips.push(
+      "Economic expansion may support more aggressive scaling strategies."
+    );
+
+  }
+
+  systemsInsight =
+    "Boom periods reward expansion but may also increase long-term overgrowth risks.";
+}
+
+// ==================================================
+// CARBON PRICING TRANSITION
+// ==================================================
+
+if (
+
+  gameState.scenario ===
+    "Carbon Pricing Transition"
+
+) {
+
+  if (
+
+    data.circularity === "High"
+
+  ) {
+
+    strengths.push(
+      "High circularity improves competitiveness under carbon-constrained systems."
+    );
+
+  }
+
+  if (
+
+    data.strategy ===
+      "Circular Innovation"
+
+  ) {
+
+    strengths.push(
+      "Circular innovation strongly aligns with climate transition conditions."
+    );
+
+  }
+
+  if (
+
+    data.circularity === "Low"
+
+  ) {
+
+    weaknesses.push(
+      "Low circularity may increase regulatory and operational pressure."
+    );
+
+    tips.push(
+      "Carbon transition systems generally reward resource efficiency and circularity."
+    );
+
+  }
+
+  systemsInsight =
+    "Climate policy increasingly transforms sustainability performance into economic competitiveness.";
+}
+
+// ==================================================
+// TRADE PROTECTION ESCALATION
+// ==================================================
+
+if (
+
+  gameState.scenario ===
+    "Trade Protection Escalation"
+
+) {
+
+  if (
+
+    data.target ===
+      "Local Market"
+
+  ) {
+
+    strengths.push(
+      "Localized operational systems improve resilience under fragmented trade conditions."
+    );
+
+  }
+
+  if (
+
+    data.unitsBucket ===
+      "Industrial Scale"
+
+  ) {
+
+    weaknesses.push(
+      "Large-scale global systems may become vulnerable under protectionist trade environments."
+    );
+
+    tips.push(
+      "Regional operational flexibility may reduce geopolitical exposure."
+    );
+
+  }
+
+  systemsInsight =
+    "Global efficiency often increases vulnerability during geopolitical fragmentation.";
+}
+
+// ==================================================
+// CREDIT LIQUIDITY CRUNCH
+// ==================================================
+
+if (
+
+  gameState.scenario ===
+    "Credit Liquidity Crunch"
+
+) {
+
+  if (
+
+    data.strategy ===
+      "Incremental Optimization"
+
+  ) {
+
+    strengths.push(
+      "Operational efficiency strategies improve financial survivability during liquidity constraints."
+    );
+
+  }
+
+  if (
+
+    data.strategy ===
+      "Breakthrough Innovation"
+
+  ) {
+
+    weaknesses.push(
+      "Speculative innovation systems may struggle under restricted financing conditions."
+    );
+
+    riskLevel = "High";
+
+  }
+
+  if (
+
+    data.unitsBucket ===
+      "Industrial Scale"
+
+  ) {
+
+    weaknesses.push(
+      "Capital-intensive expansion increases vulnerability during credit contraction."
+    );
+
+  }
+
+  systemsInsight =
+    "Innovation systems depend not only on technology but also on financial infrastructure stability.";
+}
+
+// ==================================================
+// TECH BREAKTHROUGH
+// ==================================================
+
+if (
+
+  gameState.scenario ===
+    "Tech Breakthrough"
+
+) {
+
+  if (
+
+    data.strategy ===
+      "Breakthrough Innovation"
+
+  ) {
+
+    strengths.push(
+      "Breakthrough-oriented systems align strongly with technological disruption environments."
+    );
+
+  }
+
+  if (
+
+    data.strategy ===
+      "Platform & Ecosystem Expansion"
+
+  ) {
+
+    strengths.push(
+      "Platform ecosystems accelerate technology diffusion and adaptive scaling."
+    );
+
+  }
+
+  if (
+
+    data.strategy ===
+      "Incremental Optimization"
+
+  ) {
+
+    weaknesses.push(
+      "Incremental adaptation may underperform during disruptive technological transitions."
+    );
+
+    tips.push(
+      "Rapid capability development may improve long-term competitiveness."
+    );
+
+  }
+
+  systemsInsight =
+    "Technological disruption simultaneously creates opportunity and systemic instability.";
+}
+
+// ==================================================
+// TRL-MRL ALIGNMENT
+// ==================================================
 
 if (diffTRL === 0) {
 
-  feedback.push(
+  strengths.push(
     "Technology and manufacturing systems appear strongly aligned."
   );
 
 }
 
-// -----------------------------------
-// CIRCULARITY FEEDBACK
-// -----------------------------------
+if (diffTRL >= 2) {
 
-if (
-
-  data.circularity === "Low"
-
-  &&
-
-  data.target === "European Union"
-
-) {
-
-  feedback.push(
-    "Low circularity may reduce EU market competitiveness."
+  weaknesses.push(
+    "Large TRL-MRL mismatch may create operational bottlenecks."
   );
 
-  improvementTips.push(
-    "European sustainability regulation generally rewards circular systems."
+  tips.push(
+    "Improving manufacturing readiness may strengthen scalability."
   );
 
 }
+
+// ==================================================
+// CIRCULARITY
+// ==================================================
 
 if (
 
@@ -847,189 +1154,32 @@ if (
 
 ) {
 
-  feedback.push(
+  strengths.push(
     "High circularity improves long-term sustainability resilience."
   );
 
 }
 
-// -----------------------------------
-// SCALE FEEDBACK
-// -----------------------------------
-
 if (
-
-  data.unitsBucket === "Industrial Scale"
-
-  &&
-
-  gameState.scenario === "Recession"
-
-) {
-
-  feedback.push(
-    "Aggressive scaling during recession increases fragility."
-  );
-
-  improvementTips.push(
-    "Consider smaller or phased scaling strategies during contraction periods."
-  );
-
-  riskLevel = "High";
-
-}
-
-if (
-
-  data.unitsBucket === "Pilot"
-
-  &&
-
-  gameState.scenario === "Boom"
-
-) {
-
-  improvementTips.push(
-    "Boom conditions may support more aggressive expansion strategies."
-  );
-
-}
-
-// -----------------------------------
-// INNOVATION FEEDBACK
-// -----------------------------------
-
-if (
-
-  data.strategy === "Breakthrough Innovation"
-
-  &&
-
-  gameState.scenario === "Credit Liquidity Crunch"
-
-) {
-
-  feedback.push(
-    "High-risk innovation may struggle under liquidity constraints."
-  );
-
-  improvementTips.push(
-    "Financial instability often rewards operational efficiency over speculative expansion."
-  );
-
-  riskLevel = "High";
-
-}
-
-if (
-
-  data.strategy === "Incremental Optimization"
-
-  &&
-
-  gameState.scenario === "Tech Breakthrough"
-
-) {
-
-  improvementTips.push(
-    "Incremental optimization may underperform during disruptive technological transitions."
-  );
-
-}
-
-// -----------------------------------
-// CARBON TRANSITION FEEDBACK
-// -----------------------------------
-
-if (
-
-  gameState.scenario === "Carbon Pricing Transition"
-
-  &&
 
   data.circularity === "Low"
 
-) {
-
-  improvementTips.push(
-    "Carbon pricing environments generally reward low-emission and circular production systems."
-  );
-
-}
-
-// -----------------------------------
-// TRADE PROTECTION FEEDBACK
-// -----------------------------------
-
-if (
-
-  gameState.scenario === "Trade Protection Escalation"
-
   &&
 
-  data.target === "Global South"
-
-  &&
-
-  data.unitsBucket === "Industrial Scale"
+  data.target ===
+    "European Union"
 
 ) {
 
-  improvementTips.push(
-    "Trade fragmentation may increase large-scale global supply-chain vulnerability."
+  weaknesses.push(
+    "Low circularity may reduce EU market competitiveness."
   );
 
 }
 
-// -----------------------------------
-// RESILIENCE FEEDBACK
-// -----------------------------------
-
-if (
-
-  data.strategy === "Adaptive Resilience Strategy"
-
-) {
-
-  feedback.push(
-    "Adaptive strategies improve shock survivability and operational flexibility."
-  );
-
-}
-
-// -----------------------------------
-// BUDGET STRESS
-// -----------------------------------
-
-let budgetStress = "";
-
-const remainingBudget =
-  gameState.playerBudget[playerId];
-
-if (remainingBudget >= 20000) {
-
-  budgetStress =
-    "Financially Stable";
-
-}
-
-else if (remainingBudget >= 10000) {
-
-  budgetStress =
-    "Moderate Financial Exposure";
-
-}
-
-else {
-
-  budgetStress =
-    "Financial Fragility Risk";
-
-}
-
-// -----------------------------------
+// ==================================================
 // STRATEGIC PROFILE
-// -----------------------------------
+// ==================================================
 
 if (
 
@@ -1083,24 +1233,40 @@ else {
 
 }
 
-// -----------------------------------
-// DEFAULT FEEDBACK
-// -----------------------------------
-
-if (feedback.length === 0) {
-
-  feedback.push(
-    "System configuration appears strategically coherent."
-  );
-
-}
-
-// -----------------------------------
+// ==================================================
 // LIMIT TIPS
-// -----------------------------------
+// ==================================================
 
-improvementTips =
-  improvementTips.slice(0, 3);
+tips = tips.slice(0, 3);
+
+// ==================================================
+// FINAL FEEDBACK TEXT
+// ==================================================
+
+const finalFeedback = `
+
+Interpretation:
+${interpretation}
+
+Strengths:
+${strengths.join(' ') || "No major strategic strengths detected."}
+
+Weaknesses:
+${weaknesses.join(' ') || "No major structural weaknesses detected."}
+
+Improvement Suggestions:
+${tips.join(' ') || "Current strategy appears relatively stable under present conditions."}
+
+Systems Insight:
+${systemsInsight}
+
+Strategic Profile:
+${strategicProfile}
+
+Risk Level:
+${riskLevel}
+
+`;
 
 // -----------------------------------
 // SAVE RECORD
