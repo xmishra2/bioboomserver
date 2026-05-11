@@ -1,5 +1,5 @@
-
-// ✅ BioBoom Backend v5.0 – Systemic Coherence Engine
+```javascript
+// ✅ BioBoom Backend v5.1 – Systemic Coherence Engine
 
 const express = require('express');
 const cors = require('cors');
@@ -195,7 +195,7 @@ const GM_PIN =
 app.get('/', (req, res) => {
 
   res.send(
-    '✅ BioBoom v5.0 systemic coherence backend is live'
+    '✅ BioBoom v5.1 systemic coherence backend is live'
   );
 
 });
@@ -281,8 +281,6 @@ app.post('/scenario', (req, res) => {
       )
     ];
 
-  // RESET ROUND DATA
-
   gameState.submissions = {};
 
   gameState.submissionCount = {};
@@ -326,74 +324,8 @@ app.get('/scenario', (req, res) => {
 app.post('/submit', (req, res) => {
 
   const { playerId, data } = req.body;
-    // -----------------------------------
-  // PLAYER SCORES
-  // -----------------------------------
 
-  if (!gameState.playerScores[playerId]) {
-
-    gameState.playerScores[playerId] = {
-
-      totalCoherence: 0,
-
-      totalESG: 0,
-
-      totalInnovation: 0,
-
-      totalResilience: 0,
-
-      submissions: 0
-
-    };
-
-  }
-
-  gameState.playerScores[playerId].totalCoherence += coherenceScore;
-
-  gameState.playerScores[playerId].totalESG += esg;
-
-  gameState.playerScores[playerId].totalInnovation += innovation;
-
-  gameState.playerScores[playerId].totalResilience += resilience;
-
-  gameState.playerScores[playerId].submissions += 1;
-
-  // -----------------------------------
-  // RESPONSE
-  // -----------------------------------
-
-  res.json({
-
-    success: true,
-
-    scenarioID,
-
-    coherenceScore,
-
-    esg,
-
-    innovation,
-
-    resilience,
-
-    interpretation,
-
-    strategicProfile,
-
-    riskLevel,
-
-    feedback: finalFeedback,
-
-    remainingBudget:
-      gameState.playerBudget[playerId]
-
-  });
-
-});
-
-  // -----------------------------------
   // VALIDATION
-  // -----------------------------------
 
   if (!playerId || !data) {
 
@@ -401,15 +333,32 @@ app.post('/submit', (req, res) => {
 
       success: false,
 
-      message: 'Missing submission data.'
+      message:
+        'Missing submission data.'
 
     });
 
   }
 
-  // -----------------------------------
+  if (
+    data.trl < 0 ||
+    data.trl > 4 ||
+    data.mrl < 0 ||
+    data.mrl > 4
+  ) {
+
+    return res.status(400).json({
+
+      success: false,
+
+      message:
+        'TRL and MRL must be between 0 and 4.'
+
+    });
+
+  }
+
   // BUDGET
-  // -----------------------------------
 
   const totalCost =
     scaleCost[data.unitsBucket];
@@ -428,7 +377,8 @@ app.post('/submit', (req, res) => {
 
       success: false,
 
-      message: '💸 Budget exceeded.'
+      message:
+        '💸 Budget exceeded.'
 
     });
 
@@ -436,9 +386,7 @@ app.post('/submit', (req, res) => {
 
   gameState.playerBudget[playerId] -= totalCost;
 
-  // -----------------------------------
   // SUBMISSION LIMIT
-  // -----------------------------------
 
   if (!gameState.submissionCount[playerId]) {
 
@@ -461,9 +409,7 @@ app.post('/submit', (req, res) => {
 
   }
 
-  // -----------------------------------
   // STRUCTURAL ENCODING
-  // -----------------------------------
 
   const scenarioID =
 
@@ -497,9 +443,7 @@ app.post('/submit', (req, res) => {
 
       unitsBucketCodes[data.unitsBucket];
 
-  // -----------------------------------
-  // COHERENCE COMPONENTS
-  // -----------------------------------
+  // COHERENCE
 
   let cs = 0.8;
   let cst = 0.8;
@@ -508,20 +452,14 @@ app.post('/submit', (req, res) => {
   let cc = 0.8;
   let cu = 0.8;
 
-  // -----------------------------------
-  // SECTOR-SCENARIO COHERENCE
-  // -----------------------------------
+  // SCENARIO LOGIC
 
   if (
-
     gameState.scenario ===
       "Carbon Pricing Transition"
-
     &&
-
     data.sector ===
       "Circular Packaging"
-
   ) {
 
     cs = 1.0;
@@ -529,35 +467,11 @@ app.post('/submit', (req, res) => {
   }
 
   if (
-
     gameState.scenario ===
       "Recession"
-
     &&
-
-    data.sector ===
-      "Cellular & Synthetic Bioeconomy"
-
-  ) {
-
-    cs = 0.5;
-
-  }
-
-  // -----------------------------------
-  // STRATEGY COHERENCE
-  // -----------------------------------
-
-  if (
-
-    gameState.scenario ===
-      "Recession"
-
-    &&
-
     data.strategy ===
       "Adaptive Resilience Strategy"
-
   ) {
 
     cst = 1.0;
@@ -565,40 +479,18 @@ app.post('/submit', (req, res) => {
   }
 
   if (
-
     gameState.scenario ===
       "Boom"
-
     &&
-
     data.strategy ===
       "Cost Leadership & Scale"
-
   ) {
 
     cst = 1.0;
 
   }
 
-  if (
-
-    gameState.scenario ===
-      "Carbon Pricing Transition"
-
-    &&
-
-    data.strategy ===
-      "Circular Innovation"
-
-  ) {
-
-    cst = 1.0;
-
-  }
-
-  // -----------------------------------
   // TRL-MRL ALIGNMENT
-  // -----------------------------------
 
   const diffTRL =
     Math.abs(data.trl - data.mrl);
@@ -615,19 +507,13 @@ app.post('/submit', (req, res) => {
       1 - diffTRL * 0.25
     );
 
-  // -----------------------------------
-  // CIRCULARITY COHERENCE
-  // -----------------------------------
+  // CIRCULARITY
 
   if (
-
     data.circularity === "High"
-
     &&
-
     gameState.scenario ===
       "Carbon Pricing Transition"
-
   ) {
 
     cc = 1.0;
@@ -635,34 +521,24 @@ app.post('/submit', (req, res) => {
   }
 
   if (
-
     data.circularity === "Low"
-
     &&
-
     data.target ===
       "European Union"
-
   ) {
 
     cc = 0.5;
 
   }
 
-  // -----------------------------------
-  // SCALE COHERENCE
-  // -----------------------------------
+  // SCALE
 
   if (
-
     data.unitsBucket ===
       "Industrial Scale"
-
     &&
-
     gameState.scenario ===
       "Recession"
-
   ) {
 
     cu = 0.4;
@@ -670,62 +546,42 @@ app.post('/submit', (req, res) => {
   }
 
   if (
-
     data.unitsBucket ===
       "Industrial Scale"
-
     &&
-
     gameState.scenario ===
       "Boom"
-
   ) {
 
     cu = 1.0;
 
   }
 
-  // -----------------------------------
   // FINAL COHERENCE SCORE
-  // -----------------------------------
 
   const coherenceScore = Number(
 
     (
-
       cs *
-
       cst *
-
       ct *
-
       cm *
-
       cc *
-
       cu *
-
       100
-
     ).toFixed(2)
 
   );
 
-  // -----------------------------------
-  // ESG SCORE
-  // -----------------------------------
+  // ESG
 
   let esg = 50;
 
-  if (
-    data.circularity === "High"
-  ) {
+  if (data.circularity === "High") {
     esg += 30;
   }
 
-  if (
-    data.circularity === "Medium"
-  ) {
+  if (data.circularity === "Medium") {
     esg += 15;
   }
 
@@ -738,18 +594,14 @@ app.post('/submit', (req, res) => {
 
   esg = Math.min(100, esg);
 
-  // -----------------------------------
-  // INNOVATION SCORE
-  // -----------------------------------
+  // INNOVATION
 
   let innovation =
     40 + data.trl * 10;
 
   if (
-
     data.strategy ===
       "Breakthrough Innovation"
-
   ) {
 
     innovation += 20;
@@ -759,17 +611,13 @@ app.post('/submit', (req, res) => {
   innovation =
     Math.min(100, innovation);
 
-  // -----------------------------------
-  // RESILIENCE SCORE
-  // -----------------------------------
+  // RESILIENCE
 
   let resilience = 50;
 
   if (
-
     data.strategy ===
       "Adaptive Resilience Strategy"
-
   ) {
 
     resilience += 25;
@@ -777,9 +625,7 @@ app.post('/submit', (req, res) => {
   }
 
   if (
-
     data.circularity === "High"
-
   ) {
 
     resilience += 15;
@@ -787,10 +633,8 @@ app.post('/submit', (req, res) => {
   }
 
   if (
-
     gameState.scenario ===
       "Recession"
-
   ) {
 
     resilience -= 10;
@@ -800,526 +644,158 @@ app.post('/submit', (req, res) => {
   resilience =
     Math.min(100, resilience);
 
-  // -----------------------------------
   // FEEDBACK ENGINE
-  // -----------------------------------
 
-// -----------------------------------
-// FEEDBACK ENGINE
-// -----------------------------------
+  let strengths = [];
+  let weaknesses = [];
+  let tips = [];
 
-let strengths = [];
+  let systemsInsight = "";
+  let interpretation = "";
+  let strategicProfile = "";
+  let riskLevel = "Moderate";
 
-let weaknesses = [];
+  // INTERPRETATION
 
-let tips = [];
+  if (coherenceScore >= 85) {
 
-let systemsInsight = "";
+    interpretation =
+      "Highly Coherent Strategy";
 
-let interpretation = "";
+  }
 
-let strategicProfile = "";
+  else if (coherenceScore >= 70) {
 
-let riskLevel = "Moderate";
+    interpretation =
+      "Strong Strategic Alignment";
 
-// -----------------------------------
-// COHERENCE INTERPRETATION
-// -----------------------------------
+  }
 
-if (coherenceScore >= 85) {
+  else if (coherenceScore >= 50) {
 
-  interpretation =
-    "Highly Coherent Strategy";
+    interpretation =
+      "Moderate Strategic Tension";
 
-}
+  }
 
-else if (coherenceScore >= 70) {
+  else if (coherenceScore >= 30) {
 
-  interpretation =
-    "Strong Strategic Alignment";
+    interpretation =
+      "Weak Systemic Alignment";
 
-}
+  }
 
-else if (coherenceScore >= 50) {
+  else {
 
-  interpretation =
-    "Moderate Strategic Tension";
+    interpretation =
+      "Structurally Fragile Strategy";
 
-}
+  }
 
-else if (coherenceScore >= 30) {
+  // FEEDBACK
 
-  interpretation =
-    "Weak Systemic Alignment";
-
-}
-
-else {
-
-  interpretation =
-    "Structurally Fragile Strategy";
-
-}
-
-// ==================================================
-// RECESSION
-// ==================================================
-
-if (gameState.scenario === "Recession") {
-
-  if (
-
-    data.strategy ===
-      "Adaptive Resilience Strategy"
-
-  ) {
+  if (diffTRL === 0) {
 
     strengths.push(
-      "Adaptive operational structures improve survivability during economic contraction."
+      "Technology and manufacturing systems appear strongly aligned."
     );
 
   }
 
-  if (
-
-    data.unitsBucket ===
-      "Industrial Scale"
-
-  ) {
+  if (diffTRL >= 2) {
 
     weaknesses.push(
-      "Large-scale expansion increases systemic exposure during recession conditions."
+      "Large TRL-MRL mismatch may create operational bottlenecks."
     );
 
     tips.push(
-      "Consider phased or medium-scale deployment strategies."
-    );
-
-    riskLevel = "High";
-
-  }
-
-  if (
-
-    data.strategy ===
-      "Breakthrough Innovation"
-
-  ) {
-
-    weaknesses.push(
-      "High-risk innovation systems may struggle under reduced investment conditions."
-    );
-
-  }
-
-  systemsInsight =
-    "Economic contractions often reward flexibility and resilience more than aggressive expansion.";
-}
-
-// ==================================================
-// BOOM
-// ==================================================
-
-if (gameState.scenario === "Boom") {
-
-  if (
-
-    data.unitsBucket ===
-      "Industrial Scale"
-
-  ) {
-
-    strengths.push(
-      "Industrial-scale deployment may efficiently capture expansionary market demand."
+      "Improve manufacturing readiness alignment."
     );
 
   }
 
   if (
-
-    data.strategy ===
-      "Breakthrough Innovation"
-
-  ) {
-
-    strengths.push(
-      "Boom environments often support ambitious innovation investment."
-    );
-
-  }
-
-  if (
-
-    data.unitsBucket ===
-      "Pilot"
-
-  ) {
-
-    weaknesses.push(
-      "Pilot-scale deployment may underutilize favorable expansion conditions."
-    );
-
-    tips.push(
-      "Economic expansion may support more aggressive scaling strategies."
-    );
-
-  }
-
-  systemsInsight =
-    "Boom periods reward expansion but may also increase long-term overgrowth risks.";
-}
-
-// ==================================================
-// CARBON PRICING TRANSITION
-// ==================================================
-
-if (
-
-  gameState.scenario ===
-    "Carbon Pricing Transition"
-
-) {
-
-  if (
-
     data.circularity === "High"
-
   ) {
 
     strengths.push(
-      "High circularity improves competitiveness under carbon-constrained systems."
+      "High circularity improves long-term sustainability resilience."
     );
 
   }
 
   if (
-
-    data.strategy ===
-      "Circular Innovation"
-
+    gameState.scenario === "Recession"
   ) {
 
-    strengths.push(
-      "Circular innovation strongly aligns with climate transition conditions."
-    );
+    systemsInsight =
+      "Economic contractions reward resilience and operational flexibility.";
 
   }
 
   if (
-
-    data.circularity === "Low"
-
+    gameState.scenario === "Boom"
   ) {
 
-    weaknesses.push(
-      "Low circularity may increase regulatory and operational pressure."
-    );
-
-    tips.push(
-      "Carbon transition systems generally reward resource efficiency and circularity."
-    );
-
-  }
-
-  systemsInsight =
-    "Climate policy increasingly transforms sustainability performance into economic competitiveness.";
-}
-
-// ==================================================
-// TRADE PROTECTION ESCALATION
-// ==================================================
-
-if (
-
-  gameState.scenario ===
-    "Trade Protection Escalation"
-
-) {
-
-  if (
-
-    data.target ===
-      "Local Market"
-
-  ) {
-
-    strengths.push(
-      "Localized operational systems improve resilience under fragmented trade conditions."
-    );
+    systemsInsight =
+      "Expansion periods reward scaling and aggressive innovation.";
 
   }
 
   if (
-
-    data.unitsBucket ===
-      "Industrial Scale"
-
+    gameState.scenario ===
+      "Carbon Pricing Transition"
   ) {
 
-    weaknesses.push(
-      "Large-scale global systems may become vulnerable under protectionist trade environments."
-    );
-
-    tips.push(
-      "Regional operational flexibility may reduce geopolitical exposure."
-    );
-
-  }
-
-  systemsInsight =
-    "Global efficiency often increases vulnerability during geopolitical fragmentation.";
-}
-
-// ==================================================
-// CREDIT LIQUIDITY CRUNCH
-// ==================================================
-
-if (
-
-  gameState.scenario ===
-    "Credit Liquidity Crunch"
-
-) {
-
-  if (
-
-    data.strategy ===
-      "Incremental Optimization"
-
-  ) {
-
-    strengths.push(
-      "Operational efficiency strategies improve financial survivability during liquidity constraints."
-    );
+    systemsInsight =
+      "Climate transition increasingly converts sustainability into competitiveness.";
 
   }
 
   if (
-
-    data.strategy ===
-      "Breakthrough Innovation"
-
+    innovation >= esg
+    &&
+    innovation >= resilience
   ) {
 
-    weaknesses.push(
-      "Speculative innovation systems may struggle under restricted financing conditions."
-    );
-
-    riskLevel = "High";
+    strategicProfile =
+      "Aggressive Innovator";
 
   }
 
-  if (
-
-    data.unitsBucket ===
-      "Industrial Scale"
-
+  else if (
+    esg >= innovation
+    &&
+    esg >= resilience
   ) {
 
-    weaknesses.push(
-      "Capital-intensive expansion increases vulnerability during credit contraction."
-    );
+    strategicProfile =
+      "Sustainability Leader";
 
   }
 
-  systemsInsight =
-    "Innovation systems depend not only on technology but also on financial infrastructure stability.";
-}
+  else {
 
-// ==================================================
-// TECH BREAKTHROUGH
-// ==================================================
-
-if (
-
-  gameState.scenario ===
-    "Tech Breakthrough"
-
-) {
-
-  if (
-
-    data.strategy ===
-      "Breakthrough Innovation"
-
-  ) {
-
-    strengths.push(
-      "Breakthrough-oriented systems align strongly with technological disruption environments."
-    );
+    strategicProfile =
+      "Resilient Adapter";
 
   }
 
-  if (
+  // FINAL FEEDBACK
 
-    data.strategy ===
-      "Platform & Ecosystem Expansion"
-
-  ) {
-
-    strengths.push(
-      "Platform ecosystems accelerate technology diffusion and adaptive scaling."
-    );
-
-  }
-
-  if (
-
-    data.strategy ===
-      "Incremental Optimization"
-
-  ) {
-
-    weaknesses.push(
-      "Incremental adaptation may underperform during disruptive technological transitions."
-    );
-
-    tips.push(
-      "Rapid capability development may improve long-term competitiveness."
-    );
-
-  }
-
-  systemsInsight =
-    "Technological disruption simultaneously creates opportunity and systemic instability.";
-}
-
-// ==================================================
-// TRL-MRL ALIGNMENT
-// ==================================================
-
-if (diffTRL === 0) {
-
-  strengths.push(
-    "Technology and manufacturing systems appear strongly aligned."
-  );
-
-}
-
-if (diffTRL >= 2) {
-
-  weaknesses.push(
-    "Large TRL-MRL mismatch may create operational bottlenecks."
-  );
-
-  tips.push(
-    "Improving manufacturing readiness may strengthen scalability."
-  );
-
-}
-
-// ==================================================
-// CIRCULARITY
-// ==================================================
-
-if (
-
-  data.circularity === "High"
-
-) {
-
-  strengths.push(
-    "High circularity improves long-term sustainability resilience."
-  );
-
-}
-
-if (
-
-  data.circularity === "Low"
-
-  &&
-
-  data.target ===
-    "European Union"
-
-) {
-
-  weaknesses.push(
-    "Low circularity may reduce EU market competitiveness."
-  );
-
-}
-
-// ==================================================
-// STRATEGIC PROFILE
-// ==================================================
-
-if (
-
-  innovation >= esg
-
-  &&
-
-  innovation >= resilience
-
-) {
-
-  strategicProfile =
-    "Aggressive Innovator";
-
-}
-
-else if (
-
-  esg >= innovation
-
-  &&
-
-  esg >= resilience
-
-) {
-
-  strategicProfile =
-    "Sustainability Leader";
-
-}
-
-else if (
-
-  resilience >= innovation
-
-  &&
-
-  resilience >= esg
-
-) {
-
-  strategicProfile =
-    "Resilient Adapter";
-
-}
-
-else {
-
-  strategicProfile =
-    "Balanced Systems Strategist";
-
-}
-
-// ==================================================
-// LIMIT TIPS
-// ==================================================
-
-tips = tips.slice(0, 3);
-
-// ==================================================
-// FINAL FEEDBACK TEXT
-// ==================================================
-
-const finalFeedback = `
+  const finalFeedback = `
 
 Interpretation:
 ${interpretation}
 
 Strengths:
-${strengths.join(' ') || "No major strategic strengths detected."}
+${strengths.join(' ') || "No major strengths detected."}
 
 Weaknesses:
-${weaknesses.join(' ') || "No major structural weaknesses detected."}
+${weaknesses.join(' ') || "No major weaknesses detected."}
 
 Improvement Suggestions:
-${tips.join(' ') || "Current strategy appears relatively stable under present conditions."}
+${tips.join(' ') || "Current strategy appears relatively stable."}
 
 Systems Insight:
 ${systemsInsight}
@@ -1332,50 +808,108 @@ ${riskLevel}
 
 `;
 
-// -----------------------------------
-// SAVE RECORD
-// -----------------------------------
+  // SAVE RECORD
 
-const record = {
+  const record = {
 
-  ...data,
+    ...data,
 
-  scenario: gameState.scenario,
+    scenario:
+      gameState.scenario,
 
-  scenarioID,
+    scenarioID,
 
-  coherenceScore,
+    coherenceScore,
 
-  esg,
+    esg,
 
-  innovation,
+    innovation,
 
-  resilience,
+    resilience,
 
-  interpretation,
+    interpretation,
 
-  strategicProfile,
+    strategicProfile,
 
-  riskLevel,
+    riskLevel,
 
-  budgetStress,
+    feedback:
+      finalFeedback
 
-  feedback:
-    finalFeedback,
+  };
 
-  improvementTips
+  if (!gameState.submissions[playerId]) {
 
-};
+    gameState.submissions[playerId] = [];
 
-if (!gameState.submissions[playerId]) {
+  }
 
-  gameState.submissions[playerId] = [];
+  gameState.submissions[playerId].push(record);
 
-}
+  gameState.submissionCount[playerId] += 1;
 
-gameState.submissions[playerId].push(record);
+  // PLAYER SCORES
 
-gameState.submissionCount[playerId] += 1;
+  if (!gameState.playerScores[playerId]) {
+
+    gameState.playerScores[playerId] = {
+
+      totalCoherence: 0,
+
+      totalESG: 0,
+
+      totalInnovation: 0,
+
+      totalResilience: 0,
+
+      submissions: 0
+
+    };
+
+  }
+
+  gameState.playerScores[playerId].totalCoherence += coherenceScore;
+
+  gameState.playerScores[playerId].totalESG += esg;
+
+  gameState.playerScores[playerId].totalInnovation += innovation;
+
+  gameState.playerScores[playerId].totalResilience += resilience;
+
+  gameState.playerScores[playerId].submissions += 1;
+
+  // RESPONSE
+
+  res.json({
+
+    success: true,
+
+    scenarioID,
+
+    coherenceScore,
+
+    esg,
+
+    innovation,
+
+    resilience,
+
+    interpretation,
+
+    strategicProfile,
+
+    riskLevel,
+
+    feedback:
+      finalFeedback,
+
+    remainingBudget:
+      gameState.playerBudget[playerId]
+
+  });
+
+});
+
 // --------------------------------------------------
 // GET SUBMISSIONS
 // --------------------------------------------------
@@ -1399,41 +933,41 @@ app.get('/leaderboard', (req, res) => {
     const stats =
       gameState.playerScores[player];
 
-    const avgCoherence =
-
-      stats.totalCoherence /
-      stats.submissions;
-
-    const avgESG =
-
-      stats.totalESG /
-      stats.submissions;
-
-    const avgInnovation =
-
-      stats.totalInnovation /
-      stats.submissions;
-
-    const avgResilience =
-
-      stats.totalResilience /
-      stats.submissions;
-
     leaderboard.push({
 
       name: player,
 
       coherence:
-        Number(avgCoherence.toFixed(2)),
+        Number(
+          (
+            stats.totalCoherence /
+            stats.submissions
+          ).toFixed(2)
+        ),
 
       esg:
-        Number(avgESG.toFixed(2)),
+        Number(
+          (
+            stats.totalESG /
+            stats.submissions
+          ).toFixed(2)
+        ),
 
       innovation:
-        Number(avgInnovation.toFixed(2)),
+        Number(
+          (
+            stats.totalInnovation /
+            stats.submissions
+          ).toFixed(2)
+        ),
 
       resilience:
-        Number(avgResilience.toFixed(2)),
+        Number(
+          (
+            stats.totalResilience /
+            stats.submissions
+          ).toFixed(2)
+        ),
 
       submissions:
         stats.submissions
@@ -1443,11 +977,8 @@ app.get('/leaderboard', (req, res) => {
   }
 
   leaderboard.sort(
-
     (a, b) =>
-
       b.coherence - a.coherence
-
   );
 
   res.json(leaderboard);
@@ -1485,8 +1016,9 @@ app.post('/reset', (req, res) => {
 app.listen(port, () => {
 
   console.log(
-    '✅ BioBoom v5.0 running on port',
+    '✅ BioBoom v5.1 running on port',
     port
   );
 
 });
+```
