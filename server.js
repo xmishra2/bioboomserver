@@ -740,170 +740,412 @@ app.post('/submit', (req, res) => {
   // FEEDBACK ENGINE
   // -----------------------------------
 
-  let feedback = [];
+ // -----------------------------------
+// FEEDBACK ENGINE
+// -----------------------------------
 
-  if (diffTRL >= 2) {
+let feedback = [];
 
-    feedback.push(
-      "Large TRL-MRL mismatch may create operational bottlenecks."
-    );
+let improvementTips = [];
 
-  }
+let strategicProfile = "";
 
-  if (
+let riskLevel = "Moderate";
 
-    data.circularity === "Low"
+let interpretation = "";
 
-    &&
+// -----------------------------------
+// COHERENCE INTERPRETATION
+// -----------------------------------
 
-    data.target ===
-      "European Union"
+if (coherenceScore >= 85) {
 
-  ) {
+  interpretation =
+    "Highly Coherent Strategy";
 
-    feedback.push(
-      "Low circularity may reduce EU market competitiveness."
-    );
+}
 
-  }
+else if (coherenceScore >= 70) {
 
-  if (
+  interpretation =
+    "Strong Strategic Alignment";
 
-    data.unitsBucket ===
-      "Industrial Scale"
+}
 
-    &&
+else if (coherenceScore >= 50) {
 
-    gameState.scenario ===
-      "Recession"
+  interpretation =
+    "Moderate Strategic Tension";
 
-  ) {
+}
 
-    feedback.push(
-      "Aggressive scaling during recession increases fragility."
-    );
+else if (coherenceScore >= 30) {
 
-  }
+  interpretation =
+    "Weak Systemic Alignment";
 
-  if (
+}
 
-    data.strategy ===
-      "Breakthrough Innovation"
+else {
 
-    &&
+  interpretation =
+    "Structurally Fragile Strategy";
 
-    gameState.scenario ===
-      "Credit Liquidity Crunch"
+}
 
-  ) {
+// -----------------------------------
+// TRL-MRL FEEDBACK
+// -----------------------------------
 
-    feedback.push(
-      "High-risk innovation may struggle under liquidity constraints."
-    );
+if (diffTRL >= 2) {
 
-  }
+  feedback.push(
+    "Large TRL-MRL mismatch may create operational bottlenecks."
+  );
 
-  if (feedback.length === 0) {
+  improvementTips.push(
+    "Consider improving manufacturing readiness before aggressive scaling."
+  );
 
-    feedback.push(
-      "System configuration appears strategically coherent."
-    );
+}
 
-  }
+if (diffTRL === 0) {
 
-  // -----------------------------------
-  // SAVE RECORD
-  // -----------------------------------
+  feedback.push(
+    "Technology and manufacturing systems appear strongly aligned."
+  );
 
-  const record = {
+}
 
-    ...data,
+// -----------------------------------
+// CIRCULARITY FEEDBACK
+// -----------------------------------
 
-    scenario: gameState.scenario,
+if (
 
-    scenarioID,
+  data.circularity === "Low"
 
-    coherenceScore,
+  &&
 
-    esg,
+  data.target === "European Union"
 
-    innovation,
+) {
 
-    resilience,
+  feedback.push(
+    "Low circularity may reduce EU market competitiveness."
+  );
 
-    feedback:
-      feedback.join(' ')
+  improvementTips.push(
+    "European sustainability regulation generally rewards circular systems."
+  );
 
-  };
+}
 
-  if (!gameState.submissions[playerId]) {
+if (
 
-    gameState.submissions[playerId] = [];
+  data.circularity === "High"
 
-  }
+) {
 
-  gameState.submissions[playerId].push(record);
+  feedback.push(
+    "High circularity improves long-term sustainability resilience."
+  );
 
-  gameState.submissionCount[playerId] += 1;
+}
 
-  // -----------------------------------
-  // PLAYER SCORES
-  // -----------------------------------
+// -----------------------------------
+// SCALE FEEDBACK
+// -----------------------------------
 
-  if (!gameState.playerScores[playerId]) {
+if (
 
-    gameState.playerScores[playerId] = {
+  data.unitsBucket === "Industrial Scale"
 
-      totalCoherence: 0,
+  &&
 
-      totalESG: 0,
+  gameState.scenario === "Recession"
 
-      totalInnovation: 0,
+) {
 
-      totalResilience: 0,
+  feedback.push(
+    "Aggressive scaling during recession increases fragility."
+  );
 
-      submissions: 0
-    };
-  }
+  improvementTips.push(
+    "Consider smaller or phased scaling strategies during contraction periods."
+  );
 
-  gameState.playerScores[playerId].totalCoherence += coherenceScore;
+  riskLevel = "High";
 
-  gameState.playerScores[playerId].totalESG += esg;
+}
 
-  gameState.playerScores[playerId].totalInnovation += innovation;
+if (
 
-  gameState.playerScores[playerId].totalResilience += resilience;
+  data.unitsBucket === "Pilot"
 
-  gameState.playerScores[playerId].submissions += 1;
+  &&
 
-  // -----------------------------------
-  // RESPONSE
-  // -----------------------------------
+  gameState.scenario === "Boom"
 
-  res.json({
+) {
 
-    success: true,
+  improvementTips.push(
+    "Boom conditions may support more aggressive expansion strategies."
+  );
 
-    scenarioID,
+}
 
-    coherenceScore,
+// -----------------------------------
+// INNOVATION FEEDBACK
+// -----------------------------------
 
-    esg,
+if (
 
-    innovation,
+  data.strategy === "Breakthrough Innovation"
 
-    resilience,
+  &&
 
-    remainingBudget:
-      gameState.playerBudget[playerId],
+  gameState.scenario === "Credit Liquidity Crunch"
 
-    feedback:
-      feedback.join(' ')
+) {
 
-  });
+  feedback.push(
+    "High-risk innovation may struggle under liquidity constraints."
+  );
 
-});
+  improvementTips.push(
+    "Financial instability often rewards operational efficiency over speculative expansion."
+  );
 
+  riskLevel = "High";
+
+}
+
+if (
+
+  data.strategy === "Incremental Optimization"
+
+  &&
+
+  gameState.scenario === "Tech Breakthrough"
+
+) {
+
+  improvementTips.push(
+    "Incremental optimization may underperform during disruptive technological transitions."
+  );
+
+}
+
+// -----------------------------------
+// CARBON TRANSITION FEEDBACK
+// -----------------------------------
+
+if (
+
+  gameState.scenario === "Carbon Pricing Transition"
+
+  &&
+
+  data.circularity === "Low"
+
+) {
+
+  improvementTips.push(
+    "Carbon pricing environments generally reward low-emission and circular production systems."
+  );
+
+}
+
+// -----------------------------------
+// TRADE PROTECTION FEEDBACK
+// -----------------------------------
+
+if (
+
+  gameState.scenario === "Trade Protection Escalation"
+
+  &&
+
+  data.target === "Global South"
+
+  &&
+
+  data.unitsBucket === "Industrial Scale"
+
+) {
+
+  improvementTips.push(
+    "Trade fragmentation may increase large-scale global supply-chain vulnerability."
+  );
+
+}
+
+// -----------------------------------
+// RESILIENCE FEEDBACK
+// -----------------------------------
+
+if (
+
+  data.strategy === "Adaptive Resilience Strategy"
+
+) {
+
+  feedback.push(
+    "Adaptive strategies improve shock survivability and operational flexibility."
+  );
+
+}
+
+// -----------------------------------
+// BUDGET STRESS
+// -----------------------------------
+
+let budgetStress = "";
+
+const remainingBudget =
+  gameState.playerBudget[playerId];
+
+if (remainingBudget >= 20000) {
+
+  budgetStress =
+    "Financially Stable";
+
+}
+
+else if (remainingBudget >= 10000) {
+
+  budgetStress =
+    "Moderate Financial Exposure";
+
+}
+
+else {
+
+  budgetStress =
+    "Financial Fragility Risk";
+
+}
+
+// -----------------------------------
+// STRATEGIC PROFILE
+// -----------------------------------
+
+if (
+
+  innovation >= esg
+
+  &&
+
+  innovation >= resilience
+
+) {
+
+  strategicProfile =
+    "Aggressive Innovator";
+
+}
+
+else if (
+
+  esg >= innovation
+
+  &&
+
+  esg >= resilience
+
+) {
+
+  strategicProfile =
+    "Sustainability Leader";
+
+}
+
+else if (
+
+  resilience >= innovation
+
+  &&
+
+  resilience >= esg
+
+) {
+
+  strategicProfile =
+    "Resilient Adapter";
+
+}
+
+else {
+
+  strategicProfile =
+    "Balanced Systems Strategist";
+
+}
+
+// -----------------------------------
+// DEFAULT FEEDBACK
+// -----------------------------------
+
+if (feedback.length === 0) {
+
+  feedback.push(
+    "System configuration appears strategically coherent."
+  );
+
+}
+
+// -----------------------------------
+// LIMIT TIPS
+// -----------------------------------
+
+improvementTips =
+  improvementTips.slice(0, 3);
+
+// -----------------------------------
+// SAVE RECORD
+// -----------------------------------
+
+const record = {
+
+  ...data,
+
+  scenario: gameState.scenario,
+
+  scenarioID,
+
+  coherenceScore,
+
+  esg,
+
+  innovation,
+
+  resilience,
+
+  interpretation,
+
+  strategicProfile,
+
+  riskLevel,
+
+  budgetStress,
+
+  feedback:
+    feedback.join(' '),
+
+  improvementTips
+
+};
+
+if (!gameState.submissions[playerId]) {
+
+  gameState.submissions[playerId] = [];
+
+}
+
+gameState.submissions[playerId].push(record);
+
+gameState.submissionCount[playerId] += 1;
 // --------------------------------------------------
 // GET SUBMISSIONS
 // --------------------------------------------------
