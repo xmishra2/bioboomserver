@@ -1297,7 +1297,7 @@ const record = {
   budgetStress,
 
   feedback:
-    feedback.join(' '),
+    finalFeedback,
 
   improvementTips
 
