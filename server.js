@@ -978,14 +978,10 @@ app.post('/submit', (req, res) => {
   // ==================================================
 
   const coherenceScore = Number(
-
-    (
-      rawScore * 50
-      +
-      positionalScore
-    ).toFixed(12)
-
-  );
+(
+  rawScore * 100
+).toFixed(2)
+);
 
   // ==================================================
   // ESG
