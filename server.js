@@ -982,6 +982,12 @@ app.post('/submit', (req, res) => {
   rawScore * 100
 ).toFixed(2)
 );
+  
+  // ==================================================
+// STRATEGIC FINGERPRINT
+// ==================================================
+
+const scenarioFingerprint = positionalScore;
 
   // ==================================================
   // ESG
@@ -1000,14 +1006,11 @@ app.post('/submit', (req, res) => {
   // INNOVATION
   // ==================================================
 
-  const innovation = Number(
-
-    (
-      systemState.innovationPotential *
-      35
-    ).toFixed(2)
-
-  );
+const innovation = Number(
+(
+  Math.min(100, systemState.innovationPotential * 20)
+).toFixed(2)
+);
 
   // ==================================================
   // RESILIENCE
